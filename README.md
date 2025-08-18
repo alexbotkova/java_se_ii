@@ -2,7 +2,7 @@
 CLI tool for arrays operations.
 
 ## Requirements
-- Java 24[pom.xml](pom.xml)
+- Java 24
 - Apache Maven
 
 ## Build the Project
