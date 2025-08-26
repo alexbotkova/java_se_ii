@@ -8,6 +8,8 @@ import java.io.*;
 public class WelcomeScreen {
     /** To read user input from standard input.*/
     private final BufferedReader reader;
+    /** The desired output.*/
+    private final PrintStream out;
     /** Whether the main loop should terminate.*/
     private boolean exit;
     /**Whether another array is to be created at the next loop iteration.*/
@@ -34,9 +36,24 @@ public class WelcomeScreen {
             "exit"
     };
 
+    /**
+     * Production constructor.
+     */
     public WelcomeScreen() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
+        this.out = System.out;
         this.manager = new PFArrayManager();
+        this.exit = false;
+        this.addArray = false;
+    }
+
+    /**
+     * Constructor for testing.
+     */
+    WelcomeScreen(Reader in, PrintStream out, PFArrayManager manager) {
+        this.reader = new BufferedReader(in);
+        this.out = out;
+        this.manager = (manager != null) ? manager : new PFArrayManager();
         this.exit = false;
         this.addArray = false;
     }
@@ -67,7 +84,7 @@ public class WelcomeScreen {
         try {
             return Integer.parseInt(input);
         } catch (NumberFormatException _) {
-            System.out.println("Not an integer. Enter an integer.");
+            out.println("Not an integer. Enter an integer.");
             return readInt();
         }
     }
@@ -94,7 +111,7 @@ public class WelcomeScreen {
                 }
                 return;
             case 2:
-                System.out.println("Enter comma-separated integers.");
+                out.println("Enter comma-separated integers.");
                 String csv = readLine();
                 if (csv.trim().isEmpty()) {
                     array.createEmpty();
@@ -108,7 +125,7 @@ public class WelcomeScreen {
                 }
                 return;
             default:
-                System.out.println(INVALID_CHOICE_WARNING_MSG);
+                out.println(INVALID_CHOICE_WARNING_MSG);
         }
     }
 
@@ -123,28 +140,28 @@ public class WelcomeScreen {
                 array.printArray();
                 break;
             case 2:
-                System.out.println("Enter a number to append.");
+                out.println("Enter a number to append.");
                 int numberToAppend = readInt();
                 array.appendNumber(numberToAppend);
                 break;
             case 3:
-                System.out.println(array.getMax());
+                out.println(array.getMax());
                 break;
             case 4:
-                System.out.println(array.getMin());
+                out.println(array.getMin());
                 break;
             case 5:
-                System.out.println("Enter a number to remove.");
+                out.println("Enter a number to remove.");
                 int numberToRemove = readInt();
                 array.removeNumber(numberToRemove, false);
                 break;
             case 6:
-                System.out.println("Enter a number to remove.");
+                out.println("Enter a number to remove.");
                 int numberToRemoveAll = readInt();
                 array.removeNumber(numberToRemoveAll, true);
                 break;
             case 7:
-                System.out.println(manager.selected.sumItems());
+                out.println(manager.selected.sumItems());
                 break;
             case 8:
                 array.deleteArray();
@@ -160,16 +177,16 @@ public class WelcomeScreen {
                 manager.selected = null;
                 break;
             case 12:
-                System.out.println(manager.findBiggestSumArray());
+                out.println(manager.findBiggestSumArray());
                 break;
             case 13:
-                System.out.println(manager.findSmallestSumArray());
+                out.println(manager.findSmallestSumArray());
                 break;
             case 14:
                 exit = true;
                 break;
             default:
-                System.out.println(INVALID_CHOICE_WARNING_MSG);
+                out.println(INVALID_CHOICE_WARNING_MSG);
                 break;
         }
     }
@@ -179,12 +196,12 @@ public class WelcomeScreen {
      * @return '1' for creating an array randomly, '2' for manual creation
      */
     private int getArrayCreationChoice() {
-        System.out.println("Type '1' to create a random array. Type '2' to create an array manually.");
+        out.println("Type '1' to create a random array. Type '2' to create an array manually.");
         int arrayCreationChoice = readInt();
         if (arrayCreationChoice == 1 || arrayCreationChoice == 2) {
             return arrayCreationChoice;
         } else {
-            System.out.println(INVALID_CHOICE_WARNING_MSG);
+            out.println(INVALID_CHOICE_WARNING_MSG);
             return getArrayCreationChoice();
         }
     }
@@ -194,7 +211,7 @@ public class WelcomeScreen {
      * @return a valid array name
      */
     private String getArrayName() {
-        System.out.println("Enter the name of the array you would like to create.");
+        out.println("Enter the name of the array you would like to create.");
         String arrayName = readLine();
         if (manager.isNameValid(arrayName)) {
             return arrayName;
@@ -207,23 +224,23 @@ public class WelcomeScreen {
      * Allows the user to select the current working array either by typing its name or by listing available arrays.
      */
     private void selectWorkingArray() {
-        System.out.println("Select the working array. Press '1' to type in the name of the array. Press '2' to list the names of the saved arrays.");
+        out.println("Select the working array. Press '1' to type in the name of the array. Press '2' to list the names of the saved arrays.");
         int typeOrListChoice = readInt();
         switch (typeOrListChoice) {
             case 1:
-                System.out.println("Type in the name of the array.");
+                out.println("Type in the name of the array.");
                 String arrayName = readLine();
                 if (manager.arrayExists(arrayName)) {
                     manager.selected = manager.arrays.get(arrayName);
                 } else {
-                    System.out.println(INVALID_CHOICE_WARNING_MSG);
+                    out.println(INVALID_CHOICE_WARNING_MSG);
                 }
                 break;
             case 2:
                 manager.listPFArrayNames();
                 break;
             default:
-                System.out.println(INVALID_CHOICE_WARNING_MSG);
+                out.println(INVALID_CHOICE_WARNING_MSG);
                 break;
         }
     }
@@ -232,10 +249,10 @@ public class WelcomeScreen {
      * Prints menu options with their associated number.
      */
     private void printMenuOptions() {
-        System.out.println();
+        out.println();
         int optionNumber = 1;
         for (String option : MENU_OPTIONS) {
-            System.out.printf("To %s, press '%d'.%n",  option, optionNumber++);
+            out.printf("To %s, press '%d'.%n",  option, optionNumber++);
         }
     }
 
