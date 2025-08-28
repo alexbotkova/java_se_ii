@@ -53,7 +53,7 @@ public class WelcomeScreen {
     WelcomeScreen(Reader in, PrintStream out, PFArrayManager manager) {
         this.reader = new BufferedReader(in);
         this.out = out;
-        this.manager = (manager != null) ? manager : new PFArrayManager();
+        this.manager = manager;
         this.exit = false;
         this.addArray = false;
     }
